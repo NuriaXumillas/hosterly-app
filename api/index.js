@@ -4,6 +4,7 @@ const connectDB = require('../api/config/db.config');
 const userRoutes = require('./routes/userRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const cors = require('./config/cors.config');
 
 dotenv.config();
 
@@ -12,8 +13,9 @@ connectDB();
 
 const app = express();
 
-// Middleware para parsear JSON
+// Middlewares
 app.use(express.json());
+app.use(cors);
 
 // Rutas
 app.use('/api/users', userRoutes);
