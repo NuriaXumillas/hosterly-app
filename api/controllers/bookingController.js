@@ -9,23 +9,23 @@ const dayjs = require('dayjs');
 const deleteBooking = asyncHandler(async (req, res) => {
     const booking = await Booking.findById(req.params.id);
   
-    // Verificar si la reserva existe
     if (!booking) {
-      res.status(404);
-      throw new Error('Reserva no encontrada');
+      res.status(404).json({ success: false, message: 'Reserva no encontrada' });
+      return;
     }
   
-    // Verificar que el usuario que intenta borrar la reserva sea el propietario
     if (booking.user.toString() !== req.user._id.toString()) {
-      res.status(401);
-      throw new Error('No autorizado para borrar esta reserva');
+      res.status(403).json({ success: false, message: 'No tienes permiso para esta acción' });
+      return;
     }
   
-    // Borrar la reserva usando findByIdAndDelete()
     await Booking.findByIdAndDelete(req.params.id);
-  
-    res.json({ message: 'Reserva borrada correctamente' });
-  });
+    res.json({ 
+      success: true,
+      message: 'Reserva eliminada correctamente',
+      deletedId: req.params.id
+    });
+});
 
 // @desc    Crear una nueva reserva
 // @route   POST /api/bookings
@@ -33,98 +33,204 @@ const deleteBooking = asyncHandler(async (req, res) => {
 const createBooking = asyncHandler(async (req, res) => {
   const { propertyId, checkIn, checkOut, totalPrice } = req.body;
 
-  // Verificar si la propiedad existe
+  // Validaciones básicas
+  if (!propertyId || !checkIn || !checkOut || !totalPrice) {
+    res.status(400).json({ 
+      success: false,
+      message: 'Faltan campos requeridos en la solicitud'
+    });
+    return;
+  }
+
   const property = await Property.findById(propertyId);
   if (!property) {
-    res.status(404);
-    throw new Error('Propiedad no encontrada');
+    res.status(404).json({ 
+      success: false,
+      message: 'Propiedad no encontrada'
+    });
+    return;
   }
 
-  // Convertir las fechas a objetos Day.js
+  if (totalPrice !== (property.price * nights)) {
+    res.status(400).json({
+      success: false,
+      message: 'El precio total no coincide con el cálculo del servidor'
+    });
+    return;
+  }
+
+  await Property.findByIdAndUpdate(propertyId, {
+    $addToSet: { bookings: newBooking._id }
+  });
+  
+
   const checkInDate = dayjs(checkIn);
   const checkOutDate = dayjs(checkOut);
-  const availableFromDate = dayjs(property.availableFrom);
-  const availableToDate = dayjs(property.availableTo);
+  const now = dayjs();
+  const availableFrom = dayjs(property.availableFrom);
+  const availableTo = dayjs(property.availableTo);
 
-  // Validación 1: Verificar que checkIn sea menor que checkOut
-  if (checkInDate.isAfter(checkOutDate)) {
-    res.status(400);
-    throw new Error('La fecha de check-in debe ser anterior a la fecha de check-out');
-  }
-
-  // Validación 2: Verificar que las fechas estén dentro del rango de disponibilidad de la propiedad
+  // Validación de fechas contra disponibilidad de la propiedad
   if (
-    checkInDate.isBefore(availableFromDate) ||
-    checkOutDate.isAfter(availableToDate)
+    checkInDate.isBefore(availableFrom) || 
+    checkOutDate.isAfter(availableTo)
   ) {
-    res.status(400);
-    throw new Error('Las fechas seleccionadas no están dentro del rango de disponibilidad de la propiedad');
+    res.status(400).json({
+      success: false,
+      message: 'Las fechas seleccionadas están fuera del rango disponible de la propiedad'
+    });
+    return;
   }
 
-  // Validación 3: Verificar si las fechas están disponibles
-  const isAvailable = await Booking.findOne({
+  // Validación de orden de fechas
+  if (checkInDate.isAfter(checkOutDate)) {
+    res.status(400).json({
+      success: false,
+      message: 'La fecha de check-in debe ser anterior al check-out'
+    });
+    return;
+  }
+
+  if (checkInDate.isBefore(now)) {
+    res.status(400).json({
+      success: false,
+      message: 'No se pueden reservar fechas pasadas'
+    });
+    return;
+  }
+
+  // Verificar disponibilidad contra otras reservas
+  const overlappingBookings = await Booking.find({
     property: propertyId,
     $or: [
-      { checkIn: { $lte: checkOutDate.toDate() }, checkOut: { $gte: checkInDate.toDate() } }, // Solapamiento de fechas
-    ],
+      { 
+        checkIn: { $lte: checkOutDate.toDate() }, 
+        checkOut: { $gte: checkInDate.toDate() } 
+      }
+    ]
   });
 
-  if (isAvailable) {
-    res.status(400);
-    throw new Error('La propiedad no está disponible en las fechas seleccionadas');
+  if (overlappingBookings.length > 0) {
+    res.status(409).json({
+      success: false,
+      message: 'La propiedad no está disponible en las fechas seleccionadas'
+    });
+    return;
   }
 
-  // Crear la reserva
-  const booking = await Booking.create({
+  // Crear reserva
+  const newBooking = await Booking.create({
     property: propertyId,
     user: req.user._id,
     checkIn: checkInDate.toDate(),
     checkOut: checkOutDate.toDate(),
-    totalPrice,
+    totalPrice
   });
 
-  res.status(201).json(booking);
+  const populatedBooking = await Booking.findById(newBooking._id)
+    .populate('property', 'title location photo');
+
+  res.status(201).json({
+    success: true,
+    message: 'Reserva creada exitosamente',
+    booking: populatedBooking
+  });
 });
 
-// @desc    Verificar la disponibilidad de una propiedad
+// @desc    Verificar disponibilidad
 // @route   GET /api/properties/:id/availability
 // @access  Public
 const checkAvailability = asyncHandler(async (req, res) => {
   const { checkIn, checkOut } = req.query;
   const propertyId = req.params.id;
 
-  // Convertir las fechas a objetos Day.js
-  const checkInDate = dayjs(checkIn);
-  const checkOutDate = dayjs(checkOut);
-
-  // Validación: Verificar que checkIn sea menor que checkOut
-  if (checkInDate.isAfter(checkOutDate)) {
-    res.status(400);
-    throw new Error('La fecha de check-in debe ser anterior a la fecha de check-out');
+  if (!checkIn || !checkOut) {
+    res.status(400).json({
+      success: false,
+      message: 'Se requieren ambas fechas para la consulta'
+    });
+    return;
   }
 
-  // Obtener todas las reservas de la propiedad que se solapen con las fechas consultadas
+  const property = await Property.findById(propertyId);
+  if (!property) {
+    res.status(404).json({
+      success: false,
+      message: 'Propiedad no encontrada'
+    });
+    return;
+  }
+
+  const checkInDate = dayjs(checkIn);
+  const checkOutDate = dayjs(checkOut);
+  const availableFrom = dayjs(property.availableFrom);
+  const availableTo = dayjs(property.availableTo);
+
+  // Validación de rango de fechas de la propiedad
+  if (
+    checkInDate.isBefore(availableFrom) || 
+    checkOutDate.isAfter(availableTo)
+  ) {
+    return res.json({
+      success: true,
+      available: false,
+      message: 'Fuera del rango disponible de la propiedad'
+    });
+  }
+
+  // Validación de orden de fechas
+  if (checkInDate.isAfter(checkOutDate)) {
+    res.status(400).json({
+      success: false,
+      message: 'Rango de fechas inválido'
+    });
+    return;
+  }
+
+  // Verificar solapamiento con otras reservas
   const overlappingBookings = await Booking.find({
     property: propertyId,
     $or: [
-      { checkIn: { $lte: checkOutDate.toDate() }, checkOut: { $gte: checkInDate.toDate() } }, // Solapamiento de fechas
-    ],
+      { 
+        checkIn: { $lte: checkOutDate.toDate() }, 
+        checkOut: { $gte: checkInDate.toDate() } 
+      }
+    ]
   });
 
-  // Si hay reservas que se solapan, la propiedad no está disponible
-  if (overlappingBookings.length > 0) {
-    res.json({ available: false, message: 'La propiedad no está disponible en las fechas seleccionadas' });
-  } else {
-    res.json({ available: true, message: 'La propiedad está disponible en las fechas seleccionadas' });
-  }
+  const isAvailable = overlappingBookings.length === 0;
+
+  res.json({
+    success: true,
+    available: isAvailable,
+    message: isAvailable 
+      ? 'Disponible para reservar' 
+      : 'Fechas no disponibles'
+  });
 });
 
-// @desc    Obtener todas las reservas de un usuario
+// @desc    Obtener reservas del usuario
 // @route   GET /api/bookings
 // @access  Private
 const getUserBookings = asyncHandler(async (req, res) => {
-  const bookings = await Booking.find({ user: req.user._id }).populate('property', 'title location photo');
-  res.json(bookings);
+  const bookings = await Booking.find({ user: req.user._id })
+  .populate({
+    path: 'property',
+    select: 'title location photo availableFrom availableTo',
+    model: 'Property'
+  })
+  .sort({ checkIn: -1 });
+
+  res.json({
+    success: true,
+    count: bookings.length,
+    bookings
+  });
 });
 
-module.exports = { createBooking, checkAvailability, getUserBookings, deleteBooking };
+module.exports = { 
+  createBooking, 
+  checkAvailability, 
+  getUserBookings, 
+  deleteBooking 
+};

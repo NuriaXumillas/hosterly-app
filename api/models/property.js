@@ -24,6 +24,11 @@ const propertySchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+    min: 0
+  },
   availableTo: {
     type: Date,
     required: true,

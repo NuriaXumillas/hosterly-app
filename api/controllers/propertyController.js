@@ -88,6 +88,27 @@ const createProperty = asyncHandler(async (req, res) => {
   res.status(201).json(property);
 });
 
+
+// @desc    Obtener propiedad por ID
+// @route   GET /api/properties/:id
+// @access  Public
+const getPropertyById = asyncHandler(async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id)
+      .populate('user', 'name email');
+    
+    if (!property) {
+      res.status(404);
+      throw new Error('Propiedad no encontrada');
+    }
+    
+    res.json(property);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Actualizar una propiedad
 // @route   PUT /api/properties/:id
 // @access  Private
@@ -116,4 +137,4 @@ const updateProperty = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { getProperties, createProperty, updateProperty, checkAvailability };
+module.exports = { getProperties, createProperty, updateProperty, checkAvailability, getPropertyById };

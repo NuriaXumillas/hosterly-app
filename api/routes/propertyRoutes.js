@@ -1,17 +1,23 @@
 const express = require('express');
-const { getProperties, createProperty, updateProperty, checkAvailability } = require('../controllers/propertyController');
+const { 
+  getProperties,
+  getPropertyById, 
+  createProperty,
+  updateProperty,
+  checkAvailability 
+} = require('../controllers/propertyController');
 const protect = require('../middleware/authMiddleware');
 const upload = require('../config/cloudinary.config');
 const router = express.Router();
 
 router.route('/')
-  .get(getProperties) // Obtener todas las propiedades
-  .post(protect, upload.single('photo'), createProperty); // Crear una propiedad
+  .get(getProperties)
+  .post(protect, upload.single('photo'), createProperty);
 
 router.route('/:id')
-  .put(protect, upload.single('photo'), updateProperty); // Actualizar una propiedad
+  .get(getPropertyById) // ← Ruta nueva
+  .put(protect, upload.single('photo'), updateProperty);
 
-// Ruta para verificar la disponibilidad de una propiedad
 router.route('/:id/availability')
   .get(checkAvailability);
 

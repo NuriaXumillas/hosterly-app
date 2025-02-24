@@ -55,3 +55,36 @@ export const registerUser = async (userData) => {
     throw error;
   }
 };
+
+// Funciones de reservas y disponibilidad 
+export const createBooking = async (bookingData) => {
+    try {
+      const response = await api.post('/bookings', bookingData);
+      return response.data;
+    } catch (error) {
+      console.error('Booking Error:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+  export const checkAvailability = async (propertyId, checkIn, checkOut) => {
+    try {
+      const response = await api.get(`/properties/${propertyId}/availability`, {
+        params: { checkIn, checkOut }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Availability Error:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+  export const getUserBookings = async () => {
+    try {
+      const response = await api.get('/bookings');
+      return response.data;
+    } catch (error) {
+      console.error('Bookings Error:', error.response?.data || error.message);
+      throw error;
+    }
+  };

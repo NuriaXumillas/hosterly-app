@@ -1,54 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/authContext';
 
 function Navbar() {
+  const { user, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = React.useState('');
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/properties?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-    }
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <nav className="bg-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row gap-4 md:gap-0 justify-between items-center py-4">
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-gray-800">
+        <div className="flex justify-between items-center h-16">
+          <Link to="/" className="text-2xl font-bold text-blue-600">
             Hosterly
           </Link>
+          
+          {/* Menú derecho */}
+          <div className="flex items-center space-x-4 relative">
+            {user ? (
+              <>
+                <button 
+                  onClick={toggleMenu}
+                  className="flex items-center focus:outline-none"
+                >
+                  <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                    {user.name?.charAt(0) || 'U'}
+                  </div>
+                </button>
 
-          {/* SearchBar integrada */}
-          <div className="w-full md:max-w-xl px-4">
-            <form onSubmit={handleSearch} className="flex">
-              <input
-                type="text"
-                placeholder="Buscar por ubicación..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition-colors"
-              >
-                Buscar
-              </button>
-            </form>
-          </div>
-
-          {/* Menú de navegación */}
-          <div className="flex space-x-4">
-            <Link to="/login" className="text-gray-800 hover:text-blue-600 transition-colors">
-              Iniciar sesión
-            </Link>
-            <Link to="/register" className="text-gray-800 hover:text-blue-600 transition-colors">
-              Registrarse
-            </Link>
+                {/* Menú desplegable */}
+                {isMenuOpen && (
+                  <div className="absolute right-0 top-12 bg-white rounded-lg shadow-lg py-2 w-48 z-50">
+                    <Link
+                      to="/bookings"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Mis Reservas
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout();
+                        navigate('/');
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="text-gray-600 hover:text-blue-600">
+                  Iniciar sesión
+                </Link>
+                <Link to="/register" className="text-gray-600 hover:text-blue-600">
+                  Registrarse
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
