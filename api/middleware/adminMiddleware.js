@@ -1,4 +1,3 @@
-// middleware/adminMiddleware.js
 const asyncHandler = require('express-async-handler');
 
 const admin = asyncHandler(async (req, res, next) => {

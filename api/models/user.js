@@ -25,10 +25,10 @@ const userSchema = new mongoose.Schema({
   }
   
 }, {
-  timestamps: true, // Añade createdAt y updatedAt automáticamente
+  timestamps: true,
 });
 
-// Hash de la contraseña antes de guardar el usuario
+// Hash de la contraseña
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);

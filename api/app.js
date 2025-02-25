@@ -1,35 +1,35 @@
-// Crea un archivo server.js en la raíz de tu proyecto backend
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const userRoutes = require('./routes/userRoutes');
-const propertyRoutes = require('./routes/propertyRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
 
-dotenv.config();
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const dotenv = require('dotenv');
+// const userRoutes = require('./routes/userRoutes');
+// const propertyRoutes = require('./routes/propertyRoutes');
+// const bookingRoutes = require('./routes/bookingRoutes');
 
-const app = express();
+// dotenv.config();
 
-// Middleware
-app.use(express.json());
+// const app = express();
 
-// Conexión a MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Conectado a MongoDB'))
-  .catch(err => console.error('Error de conexión a MongoDB:', err));
+// // Middleware
+// app.use(express.json());
 
-// Rutas
-app.use('/api/users', userRoutes);
-app.use('/api/properties', propertyRoutes);
-app.use('/api/bookings', bookingRoutes);
+// // Conexión a MongoDB
+// mongoose.connect(process.env.MONGODB_URI)
+//   .then(() => console.log('Conectado a MongoDB'))
+//   .catch(err => console.error('Error de conexión a MongoDB:', err));
 
-// Manejo de errores
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Algo salió mal!' });
-});
+// // Rutas
+// app.use('/api/users', userRoutes);
+// app.use('/api/properties', propertyRoutes);
+// app.use('/api/bookings', bookingRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en puerto ${PORT}`);
-});
+// // Manejo de errores
+// app.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).json({ message: 'Algo salió mal!' });
+// });
+
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`Servidor ejecutándose en puerto ${PORT}`);
+// });

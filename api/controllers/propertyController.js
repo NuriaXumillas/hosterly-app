@@ -63,11 +63,12 @@ const checkAvailability = asyncHandler(async (req, res) => {
     }
   });
 
+
 // @desc    Crear una nueva propiedad
 // @route   POST /api/properties
 // @access  Private
 const createProperty = asyncHandler(async (req, res) => {
-  const { title, description, location, availableFrom, availableTo } = req.body;
+  const { title, description, location, availableFrom, availableTo, price } = req.body;
 
   // Verificar si se subió una imagen
   if (!req.file) {
@@ -75,17 +76,32 @@ const createProperty = asyncHandler(async (req, res) => {
     throw new Error('Por favor, sube una imagen');
   }
 
-  const property = await Property.create({
-    title,
-    description,
-    location,
-    photo: req.file.path, // URL de la imagen en Cloudinary
-    availableFrom,
-    availableTo,
-    user: req.user._id,
-  });
+  // Asegurarse de que price sea un número
+  const parsedPrice = parseFloat(price);
+  if (isNaN(parsedPrice) || parsedPrice <= 0) {
+    res.status(400);
+    throw new Error('El precio debe ser un número válido mayor que 0');
+  }
 
-  res.status(201).json(property);
+  try {
+    const photoUrl = req.file.path; // URL de la imagen en Cloudinary
+
+    const property = await Property.create({
+      title,
+      description,
+      location,
+      photo: photoUrl,
+      availableFrom,
+      availableTo,
+      price: parsedPrice,  // Asegurarse de que price sea un número
+      user: req.user._id, 
+    });
+
+    res.status(201).json(property);
+  } catch (error) {
+    console.error('Error creando la propiedad:', error);
+    res.status(500).json({ message: 'Error al crear la propiedad', error: error.message });
+  }
 });
 
 
@@ -118,17 +134,19 @@ const updateProperty = asyncHandler(async (req, res) => {
   const property = await Property.findById(req.params.id);
 
   if (property) {
-    property.title = title || property.title;
-    property.description = description || property.description;
-    property.location = location || property.location;
-    property.availableFrom = availableFrom || property.availableFrom;
-    property.availableTo = availableTo || property.availableTo;
+    // Actualizar los campos si están presentes en el cuerpo de la solicitud
+    if (title) property.title = title;
+    if (description) property.description = description;
+    if (location) property.location = location;
+    if (availableFrom) property.availableFrom = availableFrom;
+    if (availableTo) property.availableTo = availableTo;
 
     // Si se sube una nueva imagen, actualiza el campo photo
     if (req.file) {
       property.photo = req.file.path;
     }
 
+    // Guardar la propiedad con las actualizaciones
     const updatedProperty = await property.save();
     res.json(updatedProperty);
   } else {
@@ -136,5 +154,6 @@ const updateProperty = asyncHandler(async (req, res) => {
     throw new Error('Propiedad no encontrada');
   }
 });
+
 
 module.exports = { getProperties, createProperty, updateProperty, checkAvailability, getPropertyById };

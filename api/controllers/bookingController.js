@@ -31,75 +31,55 @@ const deleteBooking = asyncHandler(async (req, res) => {
 // @route   POST /api/bookings
 // @access  Private
 const createBooking = asyncHandler(async (req, res) => {
-  const { propertyId, checkIn, checkOut, totalPrice } = req.body;
+  const { propertyId, checkIn, checkOut, price } = req.body;
 
   // Validaciones básicas
-  if (!propertyId || !checkIn || !checkOut || !totalPrice) {
-    res.status(400).json({ 
+  if (!propertyId || !checkIn || !checkOut || !price) {
+    return res.status(400).json({ 
       success: false,
       message: 'Faltan campos requeridos en la solicitud'
     });
-    return;
   }
 
   const property = await Property.findById(propertyId);
   if (!property) {
-    res.status(404).json({ 
+    return res.status(404).json({ 
       success: false,
       message: 'Propiedad no encontrada'
     });
-    return;
   }
-
-  if (totalPrice !== (property.price * nights)) {
-    res.status(400).json({
-      success: false,
-      message: 'El precio total no coincide con el cálculo del servidor'
-    });
-    return;
-  }
-
-  await Property.findByIdAndUpdate(propertyId, {
-    $addToSet: { bookings: newBooking._id }
-  });
-  
 
   const checkInDate = dayjs(checkIn);
   const checkOutDate = dayjs(checkOut);
   const now = dayjs();
-  const availableFrom = dayjs(property.availableFrom);
-  const availableTo = dayjs(property.availableTo);
+  
+  // Calcular noches en el backend
+  const nights = checkOutDate.diff(checkInDate, 'day');
+  const calculatedPrice = property.price * nights;
 
-  // Validación de fechas contra disponibilidad de la propiedad
-  if (
-    checkInDate.isBefore(availableFrom) || 
-    checkOutDate.isAfter(availableTo)
-  ) {
-    res.status(400).json({
+  if (price !== calculatedPrice) {
+    return res.status(400).json({
       success: false,
-      message: 'Las fechas seleccionadas están fuera del rango disponible de la propiedad'
+      message: 'El precio total no coincide con el cálculo del servidor'
     });
-    return;
   }
 
-  // Validación de orden de fechas
+  // Validación de fechas
   if (checkInDate.isAfter(checkOutDate)) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: 'La fecha de check-in debe ser anterior al check-out'
     });
-    return;
   }
 
   if (checkInDate.isBefore(now)) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: 'No se pueden reservar fechas pasadas'
     });
-    return;
   }
 
-  // Verificar disponibilidad contra otras reservas
+  // Verificar disponibilidad
   const overlappingBookings = await Booking.find({
     property: propertyId,
     $or: [
@@ -111,11 +91,10 @@ const createBooking = asyncHandler(async (req, res) => {
   });
 
   if (overlappingBookings.length > 0) {
-    res.status(409).json({
+    return res.status(409).json({
       success: false,
       message: 'La propiedad no está disponible en las fechas seleccionadas'
     });
-    return;
   }
 
   // Crear reserva
@@ -124,18 +103,30 @@ const createBooking = asyncHandler(async (req, res) => {
     user: req.user._id,
     checkIn: checkInDate.toDate(),
     checkOut: checkOutDate.toDate(),
-    totalPrice
+    price: calculatedPrice // Precio calculado en el backend
   });
 
+  // Actualizar propiedad
+  await Property.findByIdAndUpdate(propertyId, {
+    $push: { bookings: newBooking._id }
+  });
+
+  // Respuesta
   const populatedBooking = await Booking.findById(newBooking._id)
-    .populate('property', 'title location photo');
+    .populate('property', 'title location photo price');
 
   res.status(201).json({
     success: true,
     message: 'Reserva creada exitosamente',
-    booking: populatedBooking
+    booking: {
+      ...populatedBooking.toObject(),
+      _id: newBooking._id,
+      checkIn: checkInDate.format('YYYY-MM-DD'),
+      checkOut: checkOutDate.format('YYYY-MM-DD')
+    }
   });
 });
+
 
 // @desc    Verificar disponibilidad
 // @route   GET /api/properties/:id/availability

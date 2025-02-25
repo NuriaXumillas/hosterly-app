@@ -19,9 +19,10 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  totalPrice: {
+  price: {
     type: Number,
     required: true,
+    min: 0,
   },
 }, {
   timestamps: true,

@@ -1,164 +1,164 @@
 [
-    {
-      "_id": "67b9bb88a4adaa488157b1ac",
-      "title": "Casa de campo en Calasparras",
-      "description": "Encantadora casa rural con piscina y huerto ecológico",
-      "location": "Calasparras",
-      "price": 120,
-      "photo": "https://img.100r.systems/img/6c7eb8d37721a2d0d0cd39b62ca69e81.jpg",
-      "availableFrom": "2024-05-01T00:00:00.000Z",
-      "availableTo": "2024-10-31T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-02-22T11:56:56.220Z",
-      "updatedAt": "2024-02-22T11:56:56.220Z",
-      "__v": 0
+  {
+    "_id": "67b9bb88a4adaa488157b1ac",
+    "title": "Casa de campo en Calasparras",
+    "description": "Encantadora casa rural con piscina y huerto ecológico",
+    "location": "Calasparras",
+    "price": 120,
+    "photo": "https://img.100r.systems/img/6c7eb8d37721a2d0d0cd39b62ca69e81.jpg",
+    "availableFrom": "2024-05-01T00:00:00.000Z",
+    "availableTo": "2024-10-31T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9bcda08b5793097d01d99",
-      "title": "Ático céntrico en Murcia",
-      "description": "Moderno ático con terraza panorámica y vistas a la catedral",
-      "location": "Murcia",
-      "price": 450,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740225754/hosterly/murcia1.jpg",
-      "availableFrom": "2024-06-15T00:00:00.000Z",
-      "availableTo": "2024-09-15T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-03-10T09:32:45.120Z",
-      "updatedAt": "2024-03-10T09:32:45.120Z",
-      "__v": 0
+    "createdAt": "2024-02-22T11:56:56.220Z",
+    "updatedAt": "2024-02-22T11:56:56.220Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9bcda08b5793097d01d99",
+    "title": "Ático céntrico en Murcia",
+    "description": "Moderno ático con terraza panorámica y vistas a la catedral",
+    "location": "Murcia",
+    "price": 50,
+    "photo": "https://a0.muscache.com/im/pictures/767d75f6-a678-46b2-b1b9-1dc034d4340d.jpg?im_w=720&im_format=avif&im_origin=fuzzy",
+    "availableFrom": "2024-06-15T00:00:00.000Z",
+    "availableTo": "2024-09-15T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9bd6b3c8e9b6a4f2e1a5d",
-      "title": "Chalet moderno en Alicante",
-      "description": "Propiedad luminosa a 5 minutos de la playa",
-      "location": "Alicante",
-      "price": 520,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740226123/hosterly/alicante1.jpg",
-      "availableFrom": "2024-07-01T00:00:00.000Z",
-      "availableTo": "2024-12-31T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-04-05T14:22:18.450Z",
-      "updatedAt": "2024-04-05T14:22:18.450Z",
-      "__v": 0
+    "createdAt": "2024-03-10T09:32:45.120Z",
+    "updatedAt": "2024-03-10T09:32:45.120Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9bd6b3c8e9b6a4f2e1a5d",
+    "title": "Chalet moderno en Alicante",
+    "description": "Propiedad luminosa a 5 minutos de la playa",
+    "location": "Alicante",
+    "price": 20,
+    "photo": "https://a0.muscache.com/im/pictures/5e67688b-757d-44d6-8b4b-1e91dc6fe49f.jpg?im_w=1920",
+    "availableFrom": "2024-07-01T00:00:00.000Z",
+    "availableTo": "2024-12-31T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9be127f3d8c5b6d9a4f21",
-      "title": "Cortijo andaluz en Granada",
-      "description": "Antigua casa de campo con vistas a Sierra Nevada",
-      "location": "Granada",
-      "price": 810,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740226456/hosterly/granada1.jpg",
-      "availableFrom": "2024-04-15T00:00:00.000Z",
-      "availableTo": "2024-11-30T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-01-12T08:45:22.780Z",
-      "updatedAt": "2024-01-12T08:45:22.780Z",
-      "__v": 0
+    "createdAt": "2024-04-05T14:22:18.450Z",
+    "updatedAt": "2024-04-05T14:22:18.450Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9be127f3d8c5b6d9a4f21",
+    "title": "Cortijo andaluz en Granada",
+    "description": "Antigua casa de campo con vistas a Sierra Nevada",
+    "location": "Granada",
+    "price": 80,
+    "photo": "https://a0.muscache.com/im/pictures/e581ead5-8497-48f9-9b01-697efd704801.jpg?im_w=1920",
+    "availableFrom": "2024-04-15T00:00:00.000Z",
+    "availableTo": "2024-11-30T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9beca551f3d7e2a1b6c8f",
-      "title": "Piso histórico en Toledo",
-      "description": "Encanto medieval en el casco antiguo",
-      "location": "Toledo",
-      "price": 50,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740226789/hosterly/toledo1.jpg",
-      "availableFrom": "2024-09-01T00:00:00.000Z",
-      "availableTo": "2025-01-10T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-05-18T16:10:55.340Z",
-      "updatedAt": "2024-05-18T16:10:55.340Z",
-      "__v": 0
+    "createdAt": "2024-01-12T08:45:22.780Z",
+    "updatedAt": "2024-01-12T08:45:22.780Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9beca551f3d7e2a1b6c8f",
+    "title": "Piso histórico en Toledo",
+    "description": "Encanto medieval en el casco antiguo",
+    "location": "Toledo",
+    "price": 50,
+    "photo": "https://media.timeout.com/images/105981683/750/562/image.jpg",
+    "availableFrom": "2024-09-01T00:00:00.000Z",
+    "availableTo": "2025-01-10T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9bf8d924a1e3f5c7d2e4a",
-      "title": "Casa de playa en Cádiz",
-      "description": "Primera línea de playa con acceso privado",
-      "location": "Cádiz",
-      "price": 100,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740227123/hosterly/cadiz1.jpg",
-      "availableFrom": "2024-08-10T00:00:00.000Z",
-      "availableTo": "2024-10-31T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-06-02T10:15:42.900Z",
-      "updatedAt": "2024-06-02T10:15:42.900Z",
-      "__v": 0
+    "createdAt": "2024-05-18T16:10:55.340Z",
+    "updatedAt": "2024-05-18T16:10:55.340Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9bf8d924a1e3f5c7d2e4a",
+    "title": "Casa de playa en Cádiz",
+    "description": "Primera línea de playa con acceso privado",
+    "location": "Cádiz",
+    "price": 100,
+    "photo": "https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTA4NzcwMDE3OTUzNjc2NjEyNw%3D%3D/original/758156b3-dff7-4bb5-890d-c2f900e8f168.jpeg",
+    "availableFrom": "2024-08-10T00:00:00.000Z",
+    "availableTo": "2024-10-31T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9c04b3e6d9f1a4b8c5d2e",
-      "title": "Finca rústica en Calasparras",
-      "description": "Amplio terreno con olivos centenarios",
-      "location": "Calasparras",
-      "price": 209,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740227456/hosterly/calasparras2.jpg",
-      "availableFrom": "2024-03-15T00:00:00.000Z",
-      "availableTo": "2024-12-15T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-02-28T13:40:30.120Z",
-      "updatedAt": "2024-02-28T13:40:30.120Z",
-      "__v": 0
+    "createdAt": "2024-06-02T10:15:42.900Z",
+    "updatedAt": "2024-06-02T10:15:42.900Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9c04b3e6d9f1a4b8c5d2e",
+    "title": "Finca rústica en Calasparras",
+    "description": "Amplio terreno con olivos centenarios",
+    "location": "Calasparras",
+    "price": 209,
+    "photo": "https://a0.muscache.com/im/pictures/6d5a4aad-5e91-44eb-af86-4e5317f51f15.jpg?im_w=720&im_format=avif",
+    "availableFrom": "2024-03-15T00:00:00.000Z",
+    "availableTo": "2024-12-15T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9c10da7e2f5b6c3d4e5f7",
-      "title": "Loft moderno en Valencia",
-      "description": "Diseño vanguardista en el barrio del Carmen",
-      "location": "Valencia",
-      "price": 69,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740227789/hosterly/valencia1.jpg",
-      "availableFrom": "2024-07-20T00:00:00.000Z",
-      "availableTo": "2024-11-30T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-04-22T17:25:15.450Z",
-      "updatedAt": "2024-04-22T17:25:15.450Z",
-      "__v": 0
+    "createdAt": "2024-02-28T13:40:30.120Z",
+    "updatedAt": "2024-02-28T13:40:30.120Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9c10da7e2f5b6c3d4e5f7",
+    "title": "Loft moderno en Valencia",
+    "description": "Diseño vanguardista en el barrio del Carmen",
+    "location": "Valencia",
+    "price": 69,
+    "photo": "https://imagenes.elpais.com/resizer/v2/https%3A%2F%2Fcloudfront-eu-central-1.images.arcpublishing.com%2Fprisa%2FIRBI33KR75F6RH2UZMQM4TLMFM.jpg?auth=61a862d24553e339a1006ee6825c72a7eee8c58a538d55c1b79c59c339b7d7cd&width=1200&height=675&smart=true",
+    "availableFrom": "2024-07-20T00:00:00.000Z",
+    "availableTo": "2024-11-30T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
     },
-    {
-      "_id": "67b9c1d2b5c8e9a7d6f7e8b9",
-      "title": "Casa señorial en Murcia",
-      "description": "Patio andaluz y decoración tradicional",
-      "location": "Murcia",
-      "price": 90,
-      "photo": "https://res.cloudinary.com/de5fxxbh1/image/upload/v1740228123/hosterly/murcia2.jpg",
-      "availableFrom": "2024-10-01T00:00:00.000Z",
-      "availableTo": "2025-04-30T00:00:00.000Z",
-      "user": {
-        "_id": "67b9baa9a4adaa488157b1a8",
-        "name": "Anita Bananita",
-        "email": "ana@example.com"
-      },
-      "createdAt": "2024-05-10T11:55:05.670Z",
-      "updatedAt": "2024-05-10T11:55:05.670Z",
-      "__v": 0
-    }
-  ]
+    "createdAt": "2024-04-22T17:25:15.450Z",
+    "updatedAt": "2024-04-22T17:25:15.450Z",
+    "__v": 0
+  },
+  {
+    "_id": "67b9c1d2b5c8e9a7d6f7e8b9",
+    "title": "Casa señorial en Murcia",
+    "description": "Patio andaluz y decoración tradicional",
+    "location": "Murcia",
+    "price": 90,
+    "photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcy8_e8OTChl4-nn7mjZ4aQgiDAonMfgSAow&s",
+    "availableFrom": "2024-10-01T00:00:00.000Z",
+    "availableTo": "2025-04-30T00:00:00.000Z",
+    "user": {
+      "_id": "67be0fff917874fbd65fa5d5",
+      "name": "Benito Camelas",
+      "email": "benito@example.com"
+    },
+    "createdAt": "2024-05-10T11:55:05.670Z",
+    "updatedAt": "2024-05-10T11:55:05.670Z",
+    "__v": 0
+  }
+]
