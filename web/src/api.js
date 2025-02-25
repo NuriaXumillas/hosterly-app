@@ -5,6 +5,14 @@ const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Configuración común para las solicitudes de propiedades
 const propertiesAPI = {
   get: async (url, params = {}) => {

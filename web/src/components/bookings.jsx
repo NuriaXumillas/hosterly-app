@@ -1,8 +1,7 @@
-// src/pages/Bookings.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserBookings } from '../api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authContext';
 
 function Bookings() {
   const [bookings, setBookings] = useState([]);

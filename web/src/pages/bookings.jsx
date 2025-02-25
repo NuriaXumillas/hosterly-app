@@ -13,14 +13,16 @@ function Bookings() {
     const fetchBookings = async () => {
       try {
         const data = await getUserBookings();
+        console.log("Reservas obtenidas:", data); // Agrega este console.log
         setBookings(data);
       } catch (error) {
-        console.error(error);
-        navigate('/bookings'); // Ejemplo de uso correcto
+        console.error("Error obteniendo reservas:", error);
+        navigate('/booking');
       } finally {
         setLoading(false);
       }
     };
+    
     
     if (user) fetchBookings();
   }, [user, navigate]); // Añadir navigate a dependencias
