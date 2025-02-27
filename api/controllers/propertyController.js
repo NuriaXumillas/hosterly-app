@@ -1,12 +1,11 @@
-const Property = require('../models/property');
+const Property = require('../models/property.model');
 const asyncHandler = require('express-async-handler');
-const upload = require('../config/cloudinary.config');
-const Booking = require('../models/booking');
+const upload = require('../config/storage.config');
+const Booking = require('../models/booking.model');
 const dayjs = require('dayjs');
 
-// @desc    Obtener todas las propiedades (filtradas por lugar y fecha)
-// @route   GET /api/properties
-// @access  Public
+//  Obtener todas las propiedades (filtradas por lugar y fecha)
+// route   GET /api/properties
 const getProperties = asyncHandler(async (req, res) => {
   const { location, date } = req.query;
 

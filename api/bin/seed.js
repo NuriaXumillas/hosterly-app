@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Property = require('../models/property');
-const properties = require('./properties.json');
+const Property = require('../models/property.model');
+const properties = require('../data/properties.json');
 
 const seedDatabase = async () => {
   try {

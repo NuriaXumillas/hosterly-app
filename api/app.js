@@ -1,35 +1,26 @@
+require("dotenv").config();
+const express = require("express");
+const logger = require("morgan");
+const { loadSession } = require("./config/session.config"); 
+const { loadSessionUser } = require("./middlewares/session.middleware");
+const { cors } = require("./config/cors.config");
 
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const dotenv = require('dotenv');
-// const userRoutes = require('./routes/userRoutes');
-// const propertyRoutes = require('./routes/propertyRoutes');
-// const bookingRoutes = require('./routes/bookingRoutes');
+/* DB init */
+require("./config/db.config");
 
-// dotenv.config();
+const app = express();
 
-// const app = express();
+/* Middlewares */
+app.use(cors);
+app.use(express.json());
+app.use(logger("dev"));
+app.use(loadSession);  
+app.use(loadSessionUser);  
 
-// // Middleware
-// app.use(express.json());
+/* API Routes Configuration */
+const routes = require("./config/routes.config");
+app.use("/api", routes); 
 
-// // Conexión a MongoDB
-// mongoose.connect(process.env.MONGODB_URI)
-//   .then(() => console.log('Conectado a MongoDB'))
-//   .catch(err => console.error('Error de conexión a MongoDB:', err));
+const port = Number(process.env.PORT || 3000);
 
-// // Rutas
-// app.use('/api/users', userRoutes);
-// app.use('/api/properties', propertyRoutes);
-// app.use('/api/bookings', bookingRoutes);
-
-// // Manejo de errores
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(500).json({ message: 'Algo salió mal!' });
-// });
-
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Servidor ejecutándose en puerto ${PORT}`);
-// });
+app.listen(port, () => console.info(`Application running at port ${port}`));

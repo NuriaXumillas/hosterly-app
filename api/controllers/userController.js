@@ -1,85 +1,86 @@
-const User = require('../models/user');
-const asyncHandler = require('express-async-handler');
-const generateToken = require('../utils/generateToken');
+const createError = require("http-errors");
+const User = require("../models/user.model");
+const bcrypt = require('bcryptjs');
 
-// @desc    Registrar un nuevo usuario
-// @route   POST /api/users/register
-// @access  Public
-const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
 
-  // Verificar si el usuario ya existe
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    res.status(400);
-    throw new Error('El usuario ya existe');
-  }
+// Registrar un nuevo usuario (función "registerUser")
+module.exports.registerUser = (req, res, next) => {
+  const { email } = req.body;
 
-  // Crear el usuario
-  const user = await User.create({ name, email, password });
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        next(
+          createError(400, {
+            message: "User email already taken",
+            errors: { email: "Already exists" },
+          })
+        );
+      } else {
+        return User.create({
+          email: req.body.email,
+          password: req.body.password,
+          name: req.body.name,
+          avatar: req.file?.path,
+        }).then((user) => {
+        
 
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token: generateToken(user._id),
-    });
-  } else {
-    res.status(400);
-    throw new Error('Datos de usuario inválidos');
-  }
-});
+          res.status(201).json(user);
+        });
+      }
+    })
+    .catch((error) => next(error));
+};
 
-// @desc    Obtener todos los usuarios
-// @route   GET /api/users
-// @access  Private/Admin (opcional, dependiendo de tu lógica de negocio)
-const getAllUsers = asyncHandler(async (req, res) => {
-  try {
-    const users = await User.find({}); // Busca todos los usuarios en la base de datos
-    res.status(200).json(users); // Devuelve los usuarios en formato JSON
-  } catch (error) {
-    res.status(500);
-    throw new Error('Error al obtener los usuarios');
-  }
-});
 
-// @desc    Borrar todos los usuarios
-// @route   DELETE /api/users
-// @access  Private/Admin (recomendado para proteger esta acción)
-const deleteAllUsers = asyncHandler(async (req, res) => {
-    try {
-      // Eliminar todos los usuarios
-      await User.deleteMany({});
-      res.status(200).json({ message: 'Todos los usuarios han sido eliminados' });
-    } catch (error) {
-      res.status(500);
-      throw new Error('Error al eliminar los usuarios');
-    }
-  });
-
-// @desc    Autenticar usuario y obtener token
-// @route   POST /api/users/login
-// @access  Public
-const loginUser = asyncHandler(async (req, res) => {
+// Login de usuario (función "loginUser")
+module.exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
-  // Buscar al usuario por email
-  const user = await User.findOne({ email });
-
-  // Verificar si el usuario existe y la contraseña coincide
-  if (user && (await user.comparePassword(password))) {
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id),
-    });
-  } else {
-    res.status(401);
-    throw new Error('Email o contraseña inválidos');
+  // Validación básica
+  if (!email || !password) {
+    return next(createError(400, "Email y contraseña son requeridos"));
   }
-});
 
-module.exports = { registerUser, loginUser, getAllUsers, deleteAllUsers }; // Exportación directa
+  try {
+    // Buscar usuario por email 
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
+    
+    if (!user) {
+      return next(createError(401, "Credenciales inválidas")); 
+    }
+
+    // Verificar contraseña
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return next(createError(401, "Credenciales inválidas contraseña")); // quitar luego eñ contraseñas
+    }
+
+    // Autenticación exitosa (crear sesión/JWT)
+    req.session.userId = user._id;
+    res.status(200).json({ user: user.toJSON() });
+
+  } catch (err) {
+    next(createError(500, "Error en el servidor"));
+  }
+};
+
+
+// Obtener todos los usuarios (solo admin) 
+module.exports.getAllUsers = (req, res, next) => {
+  User.find()
+    .then((users) => res.json(users))
+    .catch(next);
+};
+
+// Eliminar todos los usuarios (solo admin) 
+module.exports.deleteAllUsers = (req, res, next) => {
+  User.deleteMany()  // Eliminar todos los usuarios
+    .then(() => res.status(204).send())  // Responder con un status 204 (sin contenido)
+    .catch(next);
+};
+
+// Obtener perfil del usuario (función "profile")
+module.exports.profile = (req, res, next) => {
+  res.json(req.user);  
+};

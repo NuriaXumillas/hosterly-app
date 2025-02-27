@@ -1,19 +1,18 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 
-dotenv.config();
+const MONGODB_URI = process.env.MONGODB_URI;
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('MongoDB connected successfully');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1); // Salir del proceso con error
-  }
-};
+mongoose.connect(MONGODB_URI)
+  .then(() => console.info(`Successfully connected to the database ${MONGODB_URI}`))
+  .catch((error) => {
+    console.error(`An error occurred trying to connect to the database ${MONGODB_URI}`, error);
+    process.exit(0);
+  });
 
-module.exports = connectDB;
+process.on('SIGINT', () => {
+  mongoose.connection.close()
+    .finally(() => {
+      console.log(`Database connection closed`);
+      process.exit(0);
+    })
+});

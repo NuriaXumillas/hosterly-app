@@ -1,5 +1,5 @@
-const Booking = require('../models/booking');
-const Property = require('../models/property');
+const Booking = require('../models/booking.model');
+const Property = require('../models/property.model');
 const asyncHandler = require('express-async-handler');
 const dayjs = require('dayjs');
 
@@ -204,20 +204,54 @@ const checkAvailability = asyncHandler(async (req, res) => {
 // @route   GET /api/bookings
 // @access  Private
 const getUserBookings = asyncHandler(async (req, res) => {
-  const bookings = await Booking.find({ user: req.user._id })
-  .populate({
-    path: 'property',
-    select: 'title location photo availableFrom availableTo',
-    model: 'Property'
-  })
-  .sort({ checkIn: -1 });
+  // Verificar que el usuario esté autenticado (req.user debe existir)
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: 'No autorizado, token inválido'
+    });
+  }
 
-  res.json({
-    success: true,
-    count: bookings.length,
-    bookings
-  });
+  try {
+    // Verificar que el ID del usuario esté presente
+    console.log('Usuario autenticado:', req.user._id);
+
+    // Obtener las reservas del usuario actual
+    const bookings = await Booking.find({ user: req.user._id })
+      .populate({
+        path: 'property',
+        select: 'title location photo availableFrom availableTo',
+        model: 'Property'
+      })
+      .sort({ checkIn: -1 });
+
+    // Si no hay reservas, devolver mensaje adecuado
+    if (bookings.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No tienes reservas.'
+      });
+    }
+
+    // Responder con las reservas encontradas
+    res.json({
+      success: true,
+      count: bookings.length,
+      bookings
+    });
+  } catch (error) {
+    // Log de error con detalles
+    console.error('Error obteniendo reservas:', error);
+    
+    // Responder con error 500 si algo falla en el servidor
+    res.status(500).json({
+      success: false,
+      message: 'Error en el servidor al obtener reservas.',
+      error: error.message // Proveer más detalles en caso de error
+    });
+  }
 });
+
 
 module.exports = { 
   createBooking, 
