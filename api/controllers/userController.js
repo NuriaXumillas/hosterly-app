@@ -53,7 +53,7 @@ module.exports.loginUser = async (req, res, next) => {
     // Verificar contraseña
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return next(createError(401, "Credenciales inválidas contraseña")); // quitar luego eñ contraseñas
+      return next(createError(401, "Credenciales inválidas contraseña")); // quitar luego e
     }
 
     // Autenticación exitosa (crear sesión/JWT)

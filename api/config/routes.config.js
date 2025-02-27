@@ -28,6 +28,7 @@ router.post("/login", users.loginUser);
 router.get("/users", auth.isAuthenticated, auth.isAdmin, users.getAllUsers);
 router.delete("/users", auth.isAuthenticated, auth.isAdmin, users.deleteAllUsers);
 
+
 // Session Routes
 router.post("/sessions", session.create);
 router.delete("/sessions", auth.isAuthenticated, session.destroy);
