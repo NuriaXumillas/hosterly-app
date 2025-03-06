@@ -37,26 +37,22 @@ module.exports.registerUser = (req, res, next) => {
 module.exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
-  // Validación básica
   if (!email || !password) {
     return next(createError(400, "Email y contraseña son requeridos"));
   }
 
   try {
-    // Buscar usuario por email 
     const user = await User.findOne({ email: email.trim().toLowerCase() });
     
     if (!user) {
       return next(createError(401, "Credenciales inválidas")); 
     }
 
-    // Verificar contraseña
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return next(createError(401, "Credenciales inválidas contraseña")); // quitar luego e
+      return next(createError(401, "Credenciales inválidas"));
     }
 
-    // Autenticación exitosa (crear sesión/JWT)
     req.session.userId = user._id;
     res.status(200).json({ user: user.toJSON() });
 
@@ -64,7 +60,6 @@ module.exports.loginUser = async (req, res, next) => {
     next(createError(500, "Error en el servidor"));
   }
 };
-
 
 // Obtener todos los usuarios (solo admin) 
 module.exports.getAllUsers = (req, res, next) => {
@@ -76,11 +71,19 @@ module.exports.getAllUsers = (req, res, next) => {
 // Eliminar todos los usuarios (solo admin) 
 module.exports.deleteAllUsers = (req, res, next) => {
   User.deleteMany()  // Eliminar todos los usuarios
-    .then(() => res.status(204).send())  // Responder con un status 204 (sin contenido)
+    .then(() => res.status(204).send()) 
     .catch(next);
 };
 
 // Obtener perfil del usuario (función "profile")
-module.exports.profile = (req, res, next) => {
-  res.json(req.user);  
+module.exports.profile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return next(createError(404, "Usuario no encontrado"));
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    next(createError(500, "Error del servidor"));
+  }
 };

@@ -1,43 +1,40 @@
 const User = require("../models/user.model");
 const createError = require("http-errors");
 
-
-// Crear sesion
+// Crear sesión 
 module.exports.create = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findOne({ email })
     .then((user) => {
-      if (user) {
-        user
-          .checkPassword(password)
-          .then((match) => {
-            if (match) {
-              req.session.userId = user.id;
-              res.status(201).json(user);
-            } else {
-              next(createError(401, {
-                message: "Bad credentials",
-                errors: { email: "Invalid email or password" },
-              }))
-            }
-          })
-          .catch(next);
-      } else {
-        next(createError(401, {
-          message: "Bad credentials",
-          errors: { email: "Invalid email or password" },
-        }))
+      if (!user) {
+        return next(createError(401, "Credenciales inválidas"));
       }
-    }).catch(next);
+
+      return user.checkPassword(password).then((match) => {
+        if (!match) {
+          throw createError(401, "Credenciales inválidas");
+        }
+
+        // Guarda el userId en la sesión
+        req.session.userId = user._id; 
+        user.active = true;
+        return user.save().then(() => res.json(user));
+      });
+    })
+    .catch(next);
 };
 
-
-// Destruir sesion
+// Destruir sesión 
 module.exports.destroy = (req, res, next) => {
-  req.session.destroy();
-  res.status(204).send();
+  User.findByIdAndUpdate(
+    req.session.userId,
+    { active: false },
+    { new: true }
+  )
+    .then(() => {
+      req.session.destroy(); 
+      res.status(204).send();
+    })
+    .catch(next);
 };
-
-
-

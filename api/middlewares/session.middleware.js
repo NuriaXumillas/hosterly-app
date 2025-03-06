@@ -3,31 +3,36 @@ const User = require("../models/user.model");
 
 module.exports.loadSessionUser = (req, res, next) => {
   const { userId } = req.session;
+  
   if (!userId) {
-    req.user = undefined;
+    req.user = null;  
     next();
   } else {
     User.findById(userId)
       .then((user) => {
-        req.user = user;
+        if (user) {
+          req.user = user;
+        } else {
+          req.user = null;  
+        }
         next();
       })
-      .catch((error) => next(error));
+      .catch((error) => next(error)); 
   }
 }
 
 module.exports.isAuthenticated = (req, res, next) => {
   if (req.user) {
-    next(); 
+    next();  // Si hay un usuario, sigue el flujo
   } else {
-    next(createError(401, 'Unauthorized, missing credentials'));
+    next(createError(401, 'Unauthorized, missing credentials')); 
   }
 }
 
 module.exports.isAdmin = (req, res, next) => {
-  if (req.user.role === 'admin') {
-    next();
+  if (req.user && req.user.role === 'admin') {
+    next();  // Si es admin, sigue el flujo
   } else {
-    next(createError(403, 'Forbidden, insufficient access level'));
+    next(createError(403, 'Forbidden, insufficient access level')); 
   }
 }
