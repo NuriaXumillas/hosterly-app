@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/auth-context";
 import "./App.css";
 import PropertyDetail from "./assets/pages/propertyDetail";
 import LoginForm from "./assets/pages/loginForm";
+import BookingsPage from "./assets/pages/bookings";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/bookings" element={<BookingsPage />} />
           <Route path="/properties/:propertyId" element={<PropertyDetail />} />
           <Route path="/login" element={<LoginForm />} />
         </Routes>

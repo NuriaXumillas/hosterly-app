@@ -41,6 +41,7 @@ const getUserBookings = () => http.get("/bookings");
 const getBookingsByProperty = (id) => http.get(`/properties/${id}/bookings`);
 
 
+
 export {
   profile,
   register,
